@@ -44,6 +44,7 @@ dependencies:
   encryptor: ^0.0.1
   image_picker: 
   file_picker: 
+  razorpay_flutter: 
   # flutter_plugin_pdf_viewer: 
   # flutter_pdf_viewer:
 

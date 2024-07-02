@@ -554,10 +554,502 @@
 
 
 
-import 'dart:io';
+// import 'dart:io';
+// import 'package:app/repository/repository.dart';
+// import 'package:app/view/CloneDbContent.dart';
+// import 'package:app/view/ImgByteImg.dart';
+// import 'package:app/view/ScanMifareClassic.dart';
+// import 'package:app/view/about.dart';
+// import 'package:app/view/common/form_row.dart';
+// import 'package:app/view/ndef_format.dart';
+// import 'package:app/view/ndef_write.dart';
+// import 'package:app/view/ndef_write_lock.dart';
+// import 'package:app/view/paymentScreen.dart';
+// import 'package:app/view/tag_read.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:csv/csv.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:provider/provider.dart';
+
+// class App extends StatefulWidget {
+//   static Future<Widget> withDependency() async {
+//     final repo = await Repository.createInstance();
+//     return MultiProvider(
+//       providers: [
+//         Provider<Repository>.value(
+//           value: repo,
+//         ),
+//       ],
+//       child: App(),
+//     );
+//   }
+
+//   @override
+//   State<App> createState() => _AppState();
+// }
+
+// class _AppState extends State<App> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: _Home(),
+//       theme: ThemeData(
+//         primaryColor: Color(0xFF4D8CFE),
+//         hintColor: Colors.black,
+//         scaffoldBackgroundColor: Color(0xFFEAF1FF),
+//         appBarTheme: AppBarTheme(
+//           color: Color(0xFF4D8CFE),
+//         ),
+//       ),
+//       darkTheme: ThemeData.dark(),
+//     );
+//   }
+// }
+
+// class _Home extends StatefulWidget {
+//   @override
+//   State<_Home> createState() => _HomeState();
+// }
+
+// class _HomeState extends State<_Home> {
+//   bool isPressed = true;
+//   TextEditingController regnoController = TextEditingController();
+//   List<String> headers = [];
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Center(
+//           child: Row(
+//             children: [
+//               // Image.asset(
+//               //   'assets/tinkertech.jpg',
+//               //   fit: BoxFit.cover,
+//               //   height: 32,
+//               // ),
+//               Text(
+//                 'Smart Docs',
+//                 textAlign: TextAlign.center,
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//       body: ListView(
+//         padding: EdgeInsets.all(20),
+//         children: [
+//           Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               SizedBox(height: 30),
+// //               Center(
+// //   child: Container(
+// //     height: 200,
+// //     width: 200,
+// //     decoration: BoxDecoration(
+// //       borderRadius: BorderRadius.circular(30),
+// //       color: Theme.of(context).colorScheme.surface, // Updated to use color scheme
+// //       boxShadow: [
+// //         BoxShadow(
+// //           blurRadius: 8,
+// //           offset: Offset(0, 2),
+// //           color: Colors.grey.withOpacity(0.3),
+// //         ),
+// //       ],
+// //     ),
+// //     child: InkWell( // Use InkWell for ripple effect
+// //       onTap: () {
+// //         Navigator.push(
+// //           context,
+// //           MaterialPageRoute(
+// //             builder: (context) => TagReadPage.withDependency(),
+// //           ),
+// //         );
+// //       },
+// //       borderRadius: BorderRadius.circular(30), // Match container's border radius
+// //       child: Column(
+// //         mainAxisAlignment: MainAxisAlignment.center,
+// //         children: [
+// //           Icon(
+// //             FontAwesomeIcons.nfcSymbol,
+// //             size: 50,
+// //             color: Colors.black,
+// //           ),
+// //           SizedBox(height: 10),
+// //           Text(
+// //             'Scan Smart Doc',
+// //             style: TextStyle(
+// //               fontSize: 20,
+// //               color: Colors.black,
+// //               fontWeight: FontWeight.bold,
+// //             ),
+// //           ),
+// //         ],
+// //       ),
+// //     ),
+// //   ),
+// // ),
+// // SizedBox(height: 30),
+// // Center(
+// //   child: Column(
+// //     children: [
+// //       ElevatedButton(
+// //         onPressed: () async {
+// //           Navigator.push(
+// //             context,
+// //             PageRouteBuilder( // Use PageRouteBuilder for custom animations
+// //               pageBuilder: (context, animation, secondaryAnimation) => NdefWriteLockPage.withDependency(),
+// //               transitionsBuilder: (context, animation, secondaryAnimation, child) {
+// //                 var begin = Offset(0.0, 1.0);
+// //                 var end = Offset.zero;
+// //                 var curve = Curves.easeInOut;
+// //                 var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+// //                 return SlideTransition(
+// //                   position: animation.drive(tween),
+// //                   child: child,
+// //                 );
+// //               },
+// //             ),
+// //           );
+// //         },
+// //         style: ElevatedButton.styleFrom(
+// //           primary: Theme.of(context).colorScheme.primary, // Use theme's primary color
+// //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+// //           elevation: 5,
+// //         ),
+// //         child: Padding(
+// //           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+// //           child: Row(
+// //             children: [
+// //               Icon(
+// //             FontAwesomeIcons.userLock,
+// //             color: Colors.black,
+// //           ),
+// //           SizedBox(width: 70,),
+// //               Text(
+// //                 'Write Lock',
+// //                 style: TextStyle(fontSize: 18),
+// //               ),
+// //             ],
+// //           ),
+// //         ),
+// //       ),
+// //     ],
+// //   ),
+// // ),
+
+
+// // SizedBox(height: 30),
+// // Center(
+// //   child: Column(
+// //     children: [
+// //       ElevatedButton(
+// //         onPressed: () async {
+// //           Navigator.push(
+// //             context,
+// //             PageRouteBuilder( // Use PageRouteBuilder for custom animations
+// //               pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(),
+// //               transitionsBuilder: (context, animation, secondaryAnimation, child) {
+// //                 var begin = Offset(0.0, 1.0);
+// //                 var end = Offset.zero;
+// //                 var curve = Curves.easeInOut;
+// //                 var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+// //                 return SlideTransition(
+// //                   position: animation.drive(tween),
+// //                   child: child,
+// //                 );
+// //               },
+// //             ),
+// //           );
+// //         },
+// //         style: ElevatedButton.styleFrom(
+// //           primary: Theme.of(context).colorScheme.primary, // Use theme's primary color
+// //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+// //           elevation: 5,
+// //         ),
+// //         child: Padding(
+// //           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+// //           child: Row(
+// //             children: [
+// //               Icon(
+// //             FontAwesomeIcons.userLock,
+// //             color: Colors.black,
+// //           ),
+// //           SizedBox(width: 70,),
+// //               Text(
+// //                 'Payment',
+// //                 style: TextStyle(fontSize: 18),
+// //               ),
+// //             ],
+// //           ),
+// //         ),
+// //       ),
+// //     ],
+// //   ),
+// // ),
+
+
+//               // SizedBox(height: 30,),
+//               // Center(
+//               //   child: Column(
+//               //     children: [
+//               //       Text(
+//               //         'Admin Login',
+//               //         style: TextStyle(
+//               //           fontSize: 24,
+//               //         ),
+//               //       ),
+//               //       SizedBox(height: 20),
+//               //       TextField(
+//               //         controller: regnoController,
+//               //         decoration: InputDecoration(
+//               //           border: OutlineInputBorder(),
+//               //           labelText: 'Enter Admin Id',
+                        
+//               //         ),
+//               //       ),
+//               //       SizedBox(height: 20),
+//               //       ElevatedButton(
+//               //         onPressed: () async {
+//               //           var adminList = await FirebaseFirestore.instance
+//               //               .collection('admin')
+//               //               .doc('F0BED80evF2AMUSso7mH')
+//               //               .get();
+//               //           Map<String, dynamic> mdata = adminList.data()!;
+//               //           List<dynamic> alladmin = mdata['admins'];
+//               //           if (alladmin.contains(regnoController.text.toString())) {
+//               //             Navigator.push(
+//               //               context,
+//               //               MaterialPageRoute(
+//               //                 builder: (context) =>
+//               //                     NdefWritePage.withDependency(),
+//               //               ),
+//               //             );
+//               //           } else {
+//               //             ScaffoldMessenger.of(context).showSnackBar(
+//               //               const SnackBar(
+//               //                 content: Text('Invalid Admin'),
+//               //               ),
+//               //             );
+//               //             return null;
+//               //           }
+//               //         },
+//               //         child: Text('Enter'),
+//               //       )
+//               //     ],
+//               //   ),
+//               // ),
+
+
+
+//             SizedBox(height: 30),
+// Center(
+//   child: Column(
+//     children: [
+//       ElevatedButton(
+//         onPressed: () async {
+//           Navigator.push(
+//             context,
+//             PageRouteBuilder( // Use PageRouteBuilder for custom animations
+//               pageBuilder: (context, animation, secondaryAnimation) => ScanMifareClassic(),
+//               transitionsBuilder: (context, animation, secondaryAnimation, child) {
+//                 var begin = Offset(0.0, 1.0);
+//                 var end = Offset.zero;
+//                 var curve = Curves.easeInOut;
+//                 var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+//                 return SlideTransition(
+//                   position: animation.drive(tween),
+//                   child: child,
+//                 );
+//               },
+//             ),
+//           );
+//         },
+//         style: ElevatedButton.styleFrom(
+//           primary: Theme.of(context).colorScheme.primary, // Use theme's primary color
+//           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+//           elevation: 5,
+//         ),
+//         child: Padding(
+//           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//           child: Row(
+//             children: [
+//               Icon(
+//             FontAwesomeIcons.userLock,
+//             color: Colors.black,
+//           ),
+//           SizedBox(width: 70,),
+//               Text(
+//                 'Scan Card',
+//                 style: TextStyle(fontSize: 18),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     ],
+//   ),
+// ),
+              
+
+
+
+
+//               //   Center(
+//               //   child: Column(
+//               //     children: [
+//               //       // Text(
+//               //       //   'Admin Login',
+//               //       //   style: TextStyle(
+//               //       //     fontSize: 24,
+//               //       //   ),
+//               //       // ),
+//               //       // SizedBox(height: 20),
+//               //       // TextField(
+//               //       //   controller: regnoController,
+//               //       //   decoration: InputDecoration(
+//               //       //     border: OutlineInputBorder(),
+//               //       //     labelText: 'Enter Admin Id',
+                        
+//               //       //   ),
+//               //       // ),
+//               //       // SizedBox(height: 20),
+//               //       ElevatedButton(
+//               //         onPressed: () async {
+//               //           // var adminList = await FirebaseFirestore.instance
+//               //           //     .collection('admin')
+//               //           //     .doc('F0BED80evF2AMUSso7mH')
+//               //           //     .get();
+//               //           // Map<String, dynamic> mdata = adminList.data()!;
+//               //           // List<dynamic> alladmin = mdata['admins'];
+//               //           // if (alladmin.contains(regnoController.text.toString())) {
+//               //             Navigator.push(
+//               //               context,
+//               //               MaterialPageRoute(
+//               //                 builder: (context) =>
+//               //                     CloneDbData(),
+//               //               ),
+//               //             );
+//               //           // } else {
+//               //           //   ScaffoldMessenger.of(context).showSnackBar(
+//               //           //     const SnackBar(
+//               //           //       content: Text('Invalid Admin'),
+//               //           //     ),
+//               //           //   );
+//               //           //   return null;
+//               //           // }
+//               //         },
+//               //         child: Text('Clone DB Data'),
+//               //       )
+//               //     ],
+//               //   ),
+//               // ),
+
+
+
+
+
+
+//               SizedBox(height: 30),
+//               // Center(
+//               //   child: Container(
+//               //     height: 200,
+//               //     width: 200,
+//               //     decoration: BoxDecoration(
+//               //       borderRadius: BorderRadius.circular(30),
+//               //       color: Theme.of(context).hintColor,
+//               //       boxShadow: [
+//               //         BoxShadow(
+//               //           blurRadius: 10,
+//               //           offset: Offset(5, 5),
+//               //           color: Colors.grey.withOpacity(0.5),
+//               //         ),
+//               //       ],
+//               //     ),
+//               //     child: ElevatedButton(
+//               //       onPressed: () {
+//               //         Navigator.push(
+//               //           context,
+//               //           MaterialPageRoute(
+//               //             builder: (context) => BytecodeToImage(),
+//               //           ),
+//               //         );
+//               //       },
+//               //       child: Column(
+//               //         mainAxisAlignment: MainAxisAlignment.center,
+//               //         crossAxisAlignment: CrossAxisAlignment.center,
+//               //         children: [
+//               //           Icon(
+//               //             FontAwesomeIcons.nfcSymbol,
+//               //             size: 50,
+//               //             color: Colors.white,
+//               //           ),
+//               //           SizedBox(height: 10),
+//               //           Text(
+//               //             'Img Byte Img',
+//               //             style: TextStyle(
+//               //               fontSize: 20,
+//               //               color: Colors.white,
+//               //             ),
+//               //           ),
+//               //         ],
+//               //       ),
+//               //     ),
+//               //   ),
+//               // ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:app/repository/repository.dart';
-import 'package:app/view/CloneDbContent.dart';
-import 'package:app/view/ImgByteImg.dart';
 import 'package:app/view/ScanMifareClassic.dart';
 import 'package:app/view/about.dart';
 import 'package:app/view/common/form_row.dart';
@@ -571,18 +1063,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class App extends StatefulWidget {
   static Future<Widget> withDependency() async {
-    final repo = await Repository.createInstance();
-    return MultiProvider(
-      providers: [
-        Provider<Repository>.value(
-          value: repo,
-        ),
-      ],
-      child: App(),
-    );
+    // Assume the repository is being set up here as in your original code.
+    return App();
   }
 
   @override
@@ -596,14 +1083,33 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       home: _Home(),
       theme: ThemeData(
-        primaryColor: Color(0xFF4D8CFE),
-        hintColor: Colors.black,
-        scaffoldBackgroundColor: Color(0xFFEAF1FF),
+        primaryColor: Color(0xFF00BFA5),
+        hintColor: Color(0xFF004D40),
+        scaffoldBackgroundColor: Color(0xFFE0F2F1),
         appBarTheme: AppBarTheme(
-          color: Color(0xFF4D8CFE),
+          color: Color(0xFF004D40),
+        ),
+        textTheme: TextTheme(
+          headline1: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          button: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xFF00BFA5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 5,
+          ),
         ),
       ),
-      darkTheme: ThemeData.dark(),
     );
   }
 }
@@ -614,299 +1120,80 @@ class _Home extends StatefulWidget {
 }
 
 class _HomeState extends State<_Home> {
-  bool isPressed = true;
-  TextEditingController regnoController = TextEditingController();
-  List<String> headers = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Row(
-            children: [
-              // Image.asset(
-              //   'assets/tinkertech.jpg',
-              //   fit: BoxFit.cover,
-              //   height: 32,
-              // ),
-              Text(
-                'Smart Docs',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(FontAwesomeIcons.ticketAlt, color: Colors.white),
+            SizedBox(width: 10),
+            Text('Event App', style: Theme.of(context).textTheme.headline1),
+          ],
         ),
       ),
-      body: ListView(
-        padding: EdgeInsets.all(20),
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 30),
-              Center(
-  child: Container(
-    height: 200,
-    width: 200,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(30),
-      color: Theme.of(context).colorScheme.surface, // Updated to use color scheme
-      boxShadow: [
-        BoxShadow(
-          blurRadius: 8,
-          offset: Offset(0, 2),
-          color: Colors.grey.withOpacity(0.3),
-        ),
-      ],
-    ),
-    child: InkWell( // Use InkWell for ripple effect
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TagReadPage.withDependency(),
-          ),
-        );
-      },
-      borderRadius: BorderRadius.circular(30), // Match container's border radius
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            FontAwesomeIcons.nfcSymbol,
-            size: 50,
-            color: Colors.black,
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Scan Smart Doc',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-),
-SizedBox(height: 30),
-Center(
-  child: Column(
-    children: [
-      ElevatedButton(
-        onPressed: () async {
-          Navigator.push(
-            context,
-            PageRouteBuilder( // Use PageRouteBuilder for custom animations
-              pageBuilder: (context, animation, secondaryAnimation) => NdefWriteLockPage.withDependency(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                var begin = Offset(0.0, 1.0);
-                var end = Offset.zero;
-                var curve = Curves.easeInOut;
-                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                return SlideTransition(
-                  position: animation.drive(tween),
-                  child: child,
-                );
-              },
-            ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          primary: Theme.of(context).colorScheme.primary, // Use theme's primary color
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          elevation: 5,
-        ),
+      body: Center(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-            FontAwesomeIcons.userLock,
-            color: Colors.black,
-          ),
-          SizedBox(width: 70,),
-              Text(
-                'Write Lock',
-                style: TextStyle(fontSize: 18),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-
-              SizedBox(height: 30,),
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      'Admin Login',
-                      style: TextStyle(
-                        fontSize: 24,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: regnoController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Enter Admin Id',
-                        
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () async {
-                        var adminList = await FirebaseFirestore.instance
-                            .collection('admin')
-                            .doc('F0BED80evF2AMUSso7mH')
-                            .get();
-                        Map<String, dynamic> mdata = adminList.data()!;
-                        List<dynamic> alladmin = mdata['admins'];
-                        if (alladmin.contains(regnoController.text.toString())) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  NdefWritePage.withDependency(),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Invalid Admin'),
-                            ),
-                          );
-                          return null;
-                        }
-                      },
-                      child: Text('Enter'),
-                    )
-                  ],
+              // Placeholder for GIF or image
+              Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: AssetImage('assets/scanning.gif'), // Replace with your asset path
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-
-
-
-
-              
-
-
-
-
-              //   Center(
-              //   child: Column(
-              //     children: [
-              //       // Text(
-              //       //   'Admin Login',
-              //       //   style: TextStyle(
-              //       //     fontSize: 24,
-              //       //   ),
-              //       // ),
-              //       // SizedBox(height: 20),
-              //       // TextField(
-              //       //   controller: regnoController,
-              //       //   decoration: InputDecoration(
-              //       //     border: OutlineInputBorder(),
-              //       //     labelText: 'Enter Admin Id',
-                        
-              //       //   ),
-              //       // ),
-              //       // SizedBox(height: 20),
-              //       ElevatedButton(
-              //         onPressed: () async {
-              //           // var adminList = await FirebaseFirestore.instance
-              //           //     .collection('admin')
-              //           //     .doc('F0BED80evF2AMUSso7mH')
-              //           //     .get();
-              //           // Map<String, dynamic> mdata = adminList.data()!;
-              //           // List<dynamic> alladmin = mdata['admins'];
-              //           // if (alladmin.contains(regnoController.text.toString())) {
-              //             Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                 builder: (context) =>
-              //                     CloneDbData(),
-              //               ),
-              //             );
-              //           // } else {
-              //           //   ScaffoldMessenger.of(context).showSnackBar(
-              //           //     const SnackBar(
-              //           //       content: Text('Invalid Admin'),
-              //           //     ),
-              //           //   );
-              //           //   return null;
-              //           // }
-              //         },
-              //         child: Text('Clone DB Data'),
-              //       )
-              //     ],
-              //   ),
-              // ),
-
-
-
-
-
-
-              SizedBox(height: 30),
-              // Center(
-              //   child: Container(
-              //     height: 200,
-              //     width: 200,
-              //     decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(30),
-              //       color: Theme.of(context).hintColor,
-              //       boxShadow: [
-              //         BoxShadow(
-              //           blurRadius: 10,
-              //           offset: Offset(5, 5),
-              //           color: Colors.grey.withOpacity(0.5),
-              //         ),
-              //       ],
-              //     ),
-              //     child: ElevatedButton(
-              //       onPressed: () {
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(
-              //             builder: (context) => BytecodeToImage(),
-              //           ),
-              //         );
-              //       },
-              //       child: Column(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         crossAxisAlignment: CrossAxisAlignment.center,
-              //         children: [
-              //           Icon(
-              //             FontAwesomeIcons.nfcSymbol,
-              //             size: 50,
-              //             color: Colors.white,
-              //           ),
-              //           SizedBox(height: 10),
-              //           Text(
-              //             'Img Byte Img',
-              //             style: TextStyle(
-              //               fontSize: 20,
-              //               color: Colors.white,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
+              SizedBox(height: 40),
+              Text(
+                'Welcome to the Event',
+                style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.black),
+              ),
+              SizedBox(height: 40),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) => ScanMifareClassic(),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        var begin = Offset(0.0, 1.0);
+                        var end = Offset.zero;
+                        var curve = Curves.easeInOut;
+                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                        return SlideTransition(
+                          position: animation.drive(tween),
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
+                icon: Icon(FontAwesomeIcons.idCard, color: Colors.white),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  child: Text('Scan Card', style: Theme.of(context).textTheme.button),
+                ),
+                style: ElevatedButton.styleFrom(
+                  textStyle: TextStyle(fontSize: 20),
+                  minimumSize: Size(250, 60), // Enlarging the button
+                ),
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(App());
 }
