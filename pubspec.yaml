@@ -47,6 +47,7 @@ dependencies:
   razorpay_flutter: 
   # flutter_plugin_pdf_viewer: 
   # flutter_pdf_viewer:
+  flutter_typeahead:
 
 flutter_native_splash:
   # image: "assets/tinkertech.jpg"

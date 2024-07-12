@@ -52,3 +52,6 @@ Map<String,String> Code={
 };
 
 String enc_key='AMXYZ';
+String registeredTag='RegisteredTag';
+String registeredTagDoc='Dm1EJYCnuBuGcU7P9ag5';
+String users='users';
