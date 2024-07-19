@@ -1,4 +1,5 @@
 import 'package:app/constant/key.dart';
+import 'package:app/view/ReportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
@@ -87,7 +88,6 @@ class _ScanMifareClassicState extends State<ScanMifareClassic> with SingleTicker
       _isScanning = false;
     });
 
-    // Navigate to the next page or show scan result
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Scan complete!')),
     );
@@ -110,48 +110,45 @@ class _ScanMifareClassicState extends State<ScanMifareClassic> with SingleTicker
     );
   }
 
+  Widget buildEventDetails(List<Map<String, dynamic>> events) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
 
-
-Widget buildEventDetails(List<dynamic> events) {
-  final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-
-  return SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Event Details",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        ...events.map((event) => Card(
-              margin: EdgeInsets.symmetric(vertical: 10),
-              child: ListTile(
-                leading: Icon(Icons.event),
-                title: Text("Event: ${event['eventId']}"),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("In Time: ${event['inTime'] != null && event['inTime'] is Timestamp ? formatter.format((event['inTime'] as Timestamp).toDate()) : 'N/A'}"),
-                    Text("Out Time: ${event['outTime'] != null && event['outTime'] is Timestamp ? formatter.format((event['outTime'] as Timestamp).toDate()) : 'N/A'}"),
-                    Text("Total Time Spent: ${formatDuration(event['totalTimeSpent'])}"),
-                  ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Event Details",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          ...events.map((event) => Card(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: ListTile(
+                  leading: Icon(Icons.event),
+                  title: Text("Event: ${event['eventId']}"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("In Time: ${event['inTime'] != null && event['inTime'] is Timestamp ? formatter.format((event['inTime'] as Timestamp).toDate()) : 'N/A'}"),
+                      Text("Out Time: ${event['outTime'] != null && event['outTime'] is Timestamp ? formatter.format((event['outTime'] as Timestamp).toDate()) : 'N/A'}"),
+                      Text("Total Time Spent: ${formatDuration(event['totalTimeSpent'] ?? 0)}"),
+                    ],
+                  ),
                 ),
-              ),
-            ))
-      ],
-    ),
-  );
-}
+              ))
+        ],
+      ),
+    );
+  }
 
-String formatDuration(int seconds) {
-  final Duration duration = Duration(seconds: seconds);
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
-  final String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-  final String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-  return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-}
-
+  String formatDuration(int seconds) {
+    final Duration duration = Duration(seconds: seconds);
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    final String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,11 +219,11 @@ String formatDuration(int seconds) {
                                 return Text("Unregistered Tag");
                               } else {
                                 Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-          
+
                                 if (data.containsKey('User') && data['User'] is Map) {
                                   Map<String, dynamic> userMap = data['User'];
                                   String specificId = _tag!.id;
-          
+
                                   if (userMap.containsKey(specificId)) {
                                     return FutureBuilder<DocumentSnapshot>(
                                       future: FirebaseFirestore.instance.collection(users).doc(userMap[specificId].toString()).get(),
@@ -239,12 +236,34 @@ String formatDuration(int seconds) {
                                           return Text("User does not exist");
                                         } else {
                                           Map<String, dynamic> userData = userSnapshot.data!.data() as Map<String, dynamic>;
+
+                                          // Cast events to List<Map<String, dynamic>>
+                                          List<dynamic> rawEvents = userData['events'] ?? [];
+                                          List<Map<String, dynamic>> events = rawEvents.map((e) => e as Map<String, dynamic>).toList();
+
                                           return Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               buildUserDetails(userData),
-                                              if (userData.containsKey('events') && userData['events'] is List)
-                                                buildEventDetails(userData['events']),
+                                              if (events.isNotEmpty)
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    buildEventDetails(events),
+                                                    SizedBox(height: 20),
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => ReportPage(events: events),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Text('Generate Report'),
+                                                    ),
+                                                  ],
+                                                ),
                                             ],
                                           );
                                         }
