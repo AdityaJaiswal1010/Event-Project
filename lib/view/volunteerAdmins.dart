@@ -131,7 +131,7 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
           children: [
             Icon(FontAwesomeIcons.idCard, color: Colors.white),
             SizedBox(width: 10),
-            Text('Scan Card', style: Theme.of(context).textTheme.headline6),
+            Text('Scan Card', style: Theme.of(context).textTheme.headline1,),
           ],
         ),
       ),
@@ -193,7 +193,7 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
               SizedBox(height: 40),
               Text(
                 'Hold your card near the device to scan',
-                style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.black),
+                style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.black),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 40),

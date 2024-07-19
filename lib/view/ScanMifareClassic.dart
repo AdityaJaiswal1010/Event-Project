@@ -159,7 +159,7 @@ class _ScanMifareClassicState extends State<ScanMifareClassic> with SingleTicker
           children: [
             Icon(FontAwesomeIcons.idCard, color: Colors.white),
             SizedBox(width: 10),
-            Text('Scan Card', style: Theme.of(context).textTheme.headline6),
+            Text('Scan Card' , style: Theme.of(context).textTheme.headline1, ),
           ],
         ),
       ),

@@ -13,66 +13,93 @@ class ReportPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('User Report'),
+        backgroundColor: Colors.green,
       ),
-      body: Padding(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green.shade100, Colors.green.shade300],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Event Analysis",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            _buildPieChart(),
-            SizedBox(height: 20),
-            _buildTimeSpentHistogram(),
-            SizedBox(height: 20),
-            _buildFavoriteEvent(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Event Analysis",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              SizedBox(height: 20),
+              _buildPieChart(),
+              SizedBox(height: 20),
+              _buildSummary(),
+              SizedBox(height: 20),
+              _buildFavoriteEvent(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildPieChart() {
-    // Aggregate total time spent per event
-    Map<String, int> timeSpentPerEvent = {};
+    Map<String, int> eventCounts = {};
+
     for (var event in events) {
       final eventId = event['eventId'] as String;
-      final totalTimeSpent = event['totalTimeSpent'] as int;
-      if (timeSpentPerEvent.containsKey(eventId)) {
-        timeSpentPerEvent[eventId] = timeSpentPerEvent[eventId]! + totalTimeSpent;
+      if (eventCounts.containsKey(eventId)) {
+        eventCounts[eventId] = eventCounts[eventId]! + (event['totalTimeSpent'] as int);
       } else {
-        timeSpentPerEvent[eventId] = totalTimeSpent;
+        eventCounts[eventId] = event['totalTimeSpent'] as int;
       }
     }
 
     List<charts.Series<MapEntry<String, int>, String>> series = [
       charts.Series(
         id: 'Events',
-        data: timeSpentPerEvent.entries.toList(),
+        data: eventCounts.entries.toList(),
         domainFn: (MapEntry<String, int> entry, _) => entry.key,
         measureFn: (MapEntry<String, int> entry, _) => entry.value,
         labelAccessorFn: (MapEntry<String, int> entry, _) => '${entry.key}: ${entry.value}',
       ),
     ];
 
-    return Container(
-      height: 300,
-      child: charts.PieChart<String>(
-        series,
-        animate: true,
-        defaultRenderer: charts.ArcRendererConfig(
-          arcRendererDecorators: [charts.ArcLabelDecorator()],
+    return Card(
+      elevation: 8,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Time Allocation by Event",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            SizedBox(height: 10),
+            Container(
+              height: 200,
+              child: charts.PieChart<String>(
+                series,
+                animate: true,
+                defaultRenderer: charts.ArcRendererConfig(
+                  arcRendererDecorators: [charts.ArcLabelDecorator()],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildTimeSpentHistogram() {
-    // Prepare data for histogram
+  Widget _buildSummary() {
     Map<String, int> timeSpentPerEvent = {};
+
     for (var event in events) {
       final eventId = event['eventId'] as String;
       final totalTimeSpent = event['totalTimeSpent'] as int;
@@ -83,28 +110,34 @@ class ReportPage extends StatelessWidget {
       }
     }
 
-    List<charts.Series<EventData, String>> series = [
-      charts.Series(
-        id: 'TimeSpent',
-        data: timeSpentPerEvent.entries.map((entry) => EventData(entry.key, entry.value)).toList(),
-        domainFn: (EventData data, _) => data.eventId,
-        measureFn: (EventData data, _) => data.timeSpent,
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-      ),
-    ];
+    String favoriteEventId = timeSpentPerEvent.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+    int totalEvents = timeSpentPerEvent.length;
+    int totalTimeSpent = timeSpentPerEvent.values.fold(0, (sum, item) => sum + item);
 
-    return Container(
-      height: 300,
-      child: charts.BarChart(
-        series,
-        animate: true,
-        barRendererDecorator: charts.BarLabelDecorator<String>(),
+    return Card(
+      elevation: 8,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Summary",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            SizedBox(height: 10),
+            Text("Total Events: $totalEvents", style: TextStyle(fontSize: 16)),
+            Text("Total Time Spent: ${formatDuration(totalTimeSpent)}", style: TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildFavoriteEvent() {
-    if (events.isEmpty) return Text('No events found.');
+    if (events.isEmpty) return Text('No events found.', style: TextStyle(color: Colors.white, fontSize: 16));
 
     Map<String, int> timeSpentPerEvent = {};
 
@@ -120,13 +153,32 @@ class ReportPage extends StatelessWidget {
 
     String favoriteEventId = timeSpentPerEvent.entries.reduce((a, b) => a.value > b.value ? a : b).key;
 
-    return Text('Favorite Event: $favoriteEventId');
+    return Card(
+      elevation: 8,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Favorite Event",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            SizedBox(height: 10),
+            Text('Favorite Event ID: $favoriteEventId', style: TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
+    );
   }
-}
 
-class EventData {
-  final String eventId;
-  final int timeSpent;
-
-  EventData(this.eventId, this.timeSpent);
+  String formatDuration(int seconds) {
+    final Duration duration = Duration(seconds: seconds);
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    final String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
 }
