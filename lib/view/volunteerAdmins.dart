@@ -295,8 +295,7 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
       ),
     );
   }
-
- Future<void> onScanCardButtonPressed(String userId, String eventId, bool isInTime) async {
+Future<void> onScanCardButtonPressed(String userId, String eventId, bool isInTime) async {
   final userDocRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
   // Get the user document
@@ -306,7 +305,6 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
   List<dynamic> events = userData['events'] ?? [];
 
   bool eventExists = false;
-  bool inTimeExists = false;
 
   // Iterate through the events to find if the event already exists
   for (var i = 0; i < events.length; i++) {
@@ -315,17 +313,20 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
       eventExists = true;
       if (isInTime) {
         Timestamp currentTime = Timestamp.now();
-        event['inTime'] = currentTime.toString();
-        event['outTime'] = currentTime.toString(); // Initialize outTime with inTime value
+        event['inTime'] = currentTime;
+        event['outTime'] = null; // Clear outTime when a new inTime is recorded
         event['totalTimeSpent'] = 0;
-        inTimeExists = true;
         print('In-Time set: ${event['inTime']}');
-      } else if (event['inTime'] != null) {
-        event['outTime'] = Timestamp.now().toString();
+      } else if (event['inTime'] != null && event['outTime'] == null) {
+        event['outTime'] = Timestamp.now();
         // Calculate the total time spent
-        event['totalTimeSpent'] = event['outTime'].Timestamp().toDate().difference(event['inTime'].TimeStamp().toDate()).inMinutes;
+        var inTime = (event['inTime'] as Timestamp).toDate();
+        var outTime = (event['outTime'] as Timestamp).toDate();
+        event['totalTimeSpent'] = outTime.difference(inTime).inSeconds;
         print('Out-Time set: ${event['outTime']}');
-        print('Total Time Spent: ${event['totalTimeSpent']} minutes');
+        print('Total Time Spent: ${event['totalTimeSpent']} seconds');
+      } else {
+        throw Exception('In time must be recorded before out time.');
       }
       events[i] = event; // Ensure the updated event is put back in the list
       break;
@@ -337,12 +338,12 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
     Timestamp currentTime = Timestamp.now();
     events.add({
       'eventId': eventId,
-      'inTime': currentTime.toString(),
-      'outTime': currentTime.toString(), // Initialize outTime with inTime value
+      'inTime': currentTime,
+      'outTime': null,
       'totalTimeSpent': 0,
     });
     print('New In-Time event added: ${events.last['inTime']}');
-  } else if (!inTimeExists && !isInTime) {
+  } else if (!eventExists && !isInTime) {
     // If event doesn't exist and isInTime is false, do not allow out time
     throw Exception('In time must be recorded before out time.');
   }
@@ -351,6 +352,7 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
   await userDocRef.update({'events': events});
   print('User document updated with events: $events');
 }
+
 
   void main() {
     runApp(MaterialApp(

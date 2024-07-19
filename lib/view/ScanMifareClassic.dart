@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'package:intl/intl.dart';
 
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -109,35 +110,48 @@ class _ScanMifareClassicState extends State<ScanMifareClassic> with SingleTicker
     );
   }
 
-  Widget buildEventDetails(List<dynamic> events) {
-    return SingleChildScrollView(
-      
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Event Details",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          ...events.map((event) => Card(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                child: ListTile(
-                  leading: Icon(Icons.event),
-                  title: Text("Event: ${event['eventId']}"),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("In Time: ${event['inTime']}"),
-                      Text("Out Time: ${event['outTime']}"),
-                    ],
-                  ),
+
+
+Widget buildEventDetails(List<dynamic> events) {
+  final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+
+  return SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Event Details",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10),
+        ...events.map((event) => Card(
+              margin: EdgeInsets.symmetric(vertical: 10),
+              child: ListTile(
+                leading: Icon(Icons.event),
+                title: Text("Event: ${event['eventId']}"),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("In Time: ${event['inTime'] != null && event['inTime'] is Timestamp ? formatter.format((event['inTime'] as Timestamp).toDate()) : 'N/A'}"),
+                    Text("Out Time: ${event['outTime'] != null && event['outTime'] is Timestamp ? formatter.format((event['outTime'] as Timestamp).toDate()) : 'N/A'}"),
+                    Text("Total Time Spent: ${formatDuration(event['totalTimeSpent'])}"),
+                  ],
                 ),
-              ))
-        ],
-      ),
-    );
-  }
+              ),
+            ))
+      ],
+    ),
+  );
+}
+
+String formatDuration(int seconds) {
+  final Duration duration = Duration(seconds: seconds);
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  final String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  final String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+}
+
 
   @override
   Widget build(BuildContext context) {
