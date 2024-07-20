@@ -51,7 +51,8 @@ dependencies:
   charts_flutter:
   intl: 
   font_awesome_flutter_named: 
-  
+  qr_code_scanner: 
+  fluttertoast: ^8.0.9
 
 flutter_native_splash:
   # image: "assets/tinkertech.jpg"

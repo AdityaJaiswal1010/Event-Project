@@ -289,16 +289,16 @@ class _ScanMifareClassicState extends State<ScanMifareClassic> with SingleTicker
                   child: Text('Back'),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Functionality yet to build'),
-                      ),
-                    );
-                  },
-                  child: Text('View Result'),
-                ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //       const SnackBar(
+                //         content: Text('Functionality yet to build'),
+                //       ),
+                //     );
+                //   },
+                //   child: Text('View Result'),
+                // ),
               ],
             ),
           ),

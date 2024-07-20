@@ -1047,6 +1047,7 @@
 
 
 
+import 'package:app/view/qrCodeView.dart';
 import 'package:app/view/volunteerAdmins.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -1217,6 +1218,36 @@ class _HomeState extends State<_Home> {
                   minimumSize: Size(250, 60), // Enlarging the button
                 ),
               ),
+              SizedBox(height: 40),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) => QrCodeView(),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        var begin = Offset(0.0, 1.0);
+                        var end = Offset.zero;
+                        var curve = Curves.easeInOut;
+                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                        return SlideTransition(
+                          position: animation.drive(tween),
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
+                icon: Icon(FontAwesomeIcons.idCard, color: Colors.white),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  child: Text('QR Code Scan', style: Theme.of(context).textTheme.button),
+                ),
+                style: ElevatedButton.styleFrom(
+                  textStyle: TextStyle(fontSize: 20),
+                  minimumSize: Size(250, 60), // Enlarging the button
+                ),
+              ),
             ],
           ),
         ),
@@ -1228,3 +1259,4 @@ class _HomeState extends State<_Home> {
 void main() {
   runApp(App());
 }
+

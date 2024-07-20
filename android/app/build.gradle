@@ -40,7 +40,7 @@ android {
     aaptOptions { cruncherEnabled = false }
     defaultConfig {
         applicationId "com.naokiokada.nfcmanager"
-        minSdkVersion 21
+        minSdkVersion 20
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

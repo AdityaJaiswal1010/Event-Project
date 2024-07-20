@@ -24,7 +24,7 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
   String? _result;
   String? _selectedEvent;
   String _selectedTimeType = 'In-Time'; // Default to In-Time
-  final List<String> _events = ['Event 1', 'Event 2', 'Event 3'];
+  final List<String> _events = ['Event 1', 'Event 2', 'Event 3','Event 4'];
   final List<String> _timeTypes = ['In-Time', 'Out-Time'];
   final TextEditingController _typeAheadController = TextEditingController();
 
