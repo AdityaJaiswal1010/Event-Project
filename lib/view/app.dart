@@ -1042,35 +1042,16 @@
 
 
 
-
-
-
-
-
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:app/view/AddNewStall.dart';
+import 'package:app/view/StallLocationMap.dart';
 import 'package:app/view/qrCodeView.dart';
 import 'package:app/view/volunteerAdmins.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:app/repository/repository.dart';
 import 'package:app/view/ScanMifareClassic.dart';
-import 'package:app/view/about.dart';
-import 'package:app/view/common/form_row.dart';
-import 'package:app/view/ndef_format.dart';
-import 'package:app/view/ndef_write.dart';
-import 'package:app/view/ndef_write_lock.dart';
-import 'package:app/view/tag_read.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:csv/csv.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class App extends StatefulWidget {
   static Future<Widget> withDependency() async {
-    // Assume the repository is being set up here as in your original code.
     return App();
   }
 
@@ -1138,119 +1119,97 @@ class _HomeState extends State<_Home> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Placeholder for GIF or image
-              Container(
-                height: 200,
-                width: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                    image: AssetImage('assets/scanning.gif'), // Replace with your asset path
-                    fit: BoxFit.cover,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: AssetImage('assets/scanning.gif'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 40),
-              Text(
-                'Welcome to the Event',
-                style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.black),
-              ),
-              SizedBox(height: 40),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) => ScanMifareClassic(),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        var begin = Offset(0.0, 1.0);
-                        var end = Offset.zero;
-                        var curve = Curves.easeInOut;
-                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                        return SlideTransition(
-                          position: animation.drive(tween),
-                          child: child,
-                        );
-                      },
-                    ),
-                  );
-                },
-                icon: Icon(FontAwesomeIcons.idCard, color: Colors.white),
-                label: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  child: Text('Scan Card', style: Theme.of(context).textTheme.button),
+                SizedBox(height: 40),
+                Text(
+                  'Welcome to the Event',
+                  style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.black),
                 ),
-                style: ElevatedButton.styleFrom(
-                  textStyle: TextStyle(fontSize: 20),
-                  minimumSize: Size(250, 60), // Enlarging the button
+                SizedBox(height: 40),
+                _buildElevatedButton(
+                  context,
+                  'Scan Card',
+                  FontAwesomeIcons.idCard,
+                  ScanMifareClassic(),
                 ),
-              ),
-              SizedBox(height: 40),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) => VolunteerAdmins(),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        var begin = Offset(0.0, 1.0);
-                        var end = Offset.zero;
-                        var curve = Curves.easeInOut;
-                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                        return SlideTransition(
-                          position: animation.drive(tween),
-                          child: child,
-                        );
-                      },
-                    ),
-                  );
-                },
-                icon: Icon(FontAwesomeIcons.idCard, color: Colors.white),
-                label: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  child: Text('Volunteer Admins', style: Theme.of(context).textTheme.button),
+                SizedBox(height: 40),
+                _buildElevatedButton(
+                  context,
+                  'Volunteer Admins',
+                  FontAwesomeIcons.users,
+                  VolunteerAdmins(),
                 ),
-                style: ElevatedButton.styleFrom(
-                  textStyle: TextStyle(fontSize: 20),
-                  minimumSize: Size(250, 60), // Enlarging the button
+                SizedBox(height: 40),
+                _buildElevatedButton(
+                  context,
+                  'Add new Stall',
+                  FontAwesomeIcons.plus,
+                  AddNewStall(),
                 ),
-              ),
-              SizedBox(height: 40),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) => QrCodeView(),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        var begin = Offset(0.0, 1.0);
-                        var end = Offset.zero;
-                        var curve = Curves.easeInOut;
-                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                        return SlideTransition(
-                          position: animation.drive(tween),
-                          child: child,
-                        );
-                      },
-                    ),
-                  );
-                },
-                icon: Icon(FontAwesomeIcons.idCard, color: Colors.white),
-                label: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  child: Text('QR Code Scan', style: Theme.of(context).textTheme.button),
+                SizedBox(height: 40),
+                _buildElevatedButton(
+                  context,
+                  'QR Code Scan',
+                  FontAwesomeIcons.qrcode,
+                  QrCodeView(),
                 ),
-                style: ElevatedButton.styleFrom(
-                  textStyle: TextStyle(fontSize: 20),
-                  minimumSize: Size(250, 60), // Enlarging the button
+                SizedBox(height: 40),
+                _buildElevatedButton(
+                  context,
+                  'View Stalls',
+                  FontAwesomeIcons.mapMarkerAlt,
+                  StallLocationMap(),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildElevatedButton(BuildContext context, String text, IconData icon, Widget page) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => page,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(0.0, 1.0);
+              var end = Offset.zero;
+              var curve = Curves.easeInOut;
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          ),
+        );
+      },
+      icon: Icon(icon, color: Colors.white),
+      label: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        child: Text(text, style: Theme.of(context).textTheme.button),
+      ),
+      style: ElevatedButton.styleFrom(
+        textStyle: TextStyle(fontSize: 20),
+        minimumSize: Size(250, 60),
       ),
     );
   }
@@ -1259,4 +1218,3 @@ class _HomeState extends State<_Home> {
 void main() {
   runApp(App());
 }
-

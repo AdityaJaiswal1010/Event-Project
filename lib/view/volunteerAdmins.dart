@@ -6,6 +6,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ndef/ndef.dart' as ndef;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -24,14 +25,34 @@ class _VolunteerAdminsState extends State<VolunteerAdmins> with SingleTickerProv
   String? _result;
   String? _selectedEvent;
   String _selectedTimeType = 'In-Time'; // Default to In-Time
-  final List<String> _events = ['Event 1', 'Event 2', 'Event 3','Event 4'];
+  
+  late List<String> _events = [];
   final List<String> _timeTypes = ['In-Time', 'Out-Time'];
   final TextEditingController _typeAheadController = TextEditingController();
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
   void initState() {
     super.initState();
     initPlatformState();
+  _fetchStallMap();
+  }
+
+  Future<void> _fetchStallMap() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _firestore.collection('stallMap').doc('HdFbY9S1XyLHqKGuOLAE').get();
+      Map<String, dynamic>? stallMap = documentSnapshot.data()?['stallMap'];
+
+      if (stallMap != null) {
+        setState(() {
+          _events = stallMap.values.map((value) => value.toString()).toList();
+        });
+        Fluttertoast.showToast(msg: 'Stall map fetched successfully');
+      } else {
+        Fluttertoast.showToast(msg: 'Stall map is empty');
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Failed to fetch stall map: $e');
+    }
   }
 
   Future<void> initPlatformState() async {

@@ -1,18 +1,20 @@
 function generateQRCode() {
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
+    const candidate_name = document.getElementById('candidate_name').value;
+    const dob = document.getElementById('dob').value;
+    const father_name= document.getElementById('father_name').value;
+    const mother_name= document.getElementById('mother_name').value;
 
-    if (name && email) {
-        const qrData = JSON.stringify({ name, email });
+    if (candidate_name && dob && father_name && mother_name) {
+        const qrData = JSON.stringify({ candidate_name, dob, father_name, mother_name });
         const qrCodeElement = document.getElementById('qrcode');
         qrCodeElement.innerHTML = "";
         new QRCode(qrCodeElement, qrData);
-        sendEmail(email, qrData);
+        // sendEmail(email, qrData);
     }
 }
 
 function sendEmail(to, qrData) {
-    const senderEmail = 'adityajaiswal9820@gmail.com';
+    const senderEmail = 'aditya.jaiswal15974@sakec.ac.in';
     const senderPassword = to;  // Use app-specific password if using Gmail
     const emailBody = `Here is your QR code data: ${qrData}`;
 

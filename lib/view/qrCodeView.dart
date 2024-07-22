@@ -114,7 +114,7 @@ class _QrCodeViewState extends State<QrCodeView> {
         color: Colors.white,
         child: Text(
           barcode != null ? "${barcode!.code}" : "Scan QR Code!",
-          maxLines: 5,
+          maxLines: 10,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       );
